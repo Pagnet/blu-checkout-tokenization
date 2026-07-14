@@ -1,19 +1,26 @@
 {
-  "name": "@malga/tokenization",
-  "version": "2.3.0",
+  "name": "@useblu/checkout-tokenization",
+  "version": "1.0.0",
   "packageManager": "pnpm@9.0.5",
-  "description": "Simple way to tokenize cards with Malga",
-  "repository": "git@github.com:plughacker/malga-tokenization.git",
-  "author": "Malga <engineer@malga.io>",
+  "description": "SDK de tokenizacao de cartoes da Blu para checkout ecommerce (fork de @malga/tokenization). Dados sensiveis transitam apenas entre iframes seguros e a Malga; o lojista recebe apenas o tokenId.",
+  "repository": "git@github.com:Pagnet/blu-checkout-tokenization.git",
+  "author": "Blu <dev@useblu.com.br>",
   "contributors": [
-    "Leonardo Pinheiro <leonardo@malga.io>"
+    "Malga <engineer@malga.io> (upstream: @malga/tokenization)"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/plughacker/malga-tokenization/issues"
+    "url": "https://github.com/Pagnet/blu-checkout-tokenization/issues"
   },
-  "homepage": "https://github.com/plughacker/malga-tokenization#readme",
+  "homepage": "https://github.com/Pagnet/blu-checkout-tokenization#readme",
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "files": [
     "dist"
   ],
@@ -33,21 +40,17 @@
   },
   "lint-staged": {
     "packages/**/*.{ts,tsx}": [
-      "yarn lint"
+      "pnpm lint"
     ]
   },
   "scripts": {
     "setup:husky": "husky install",
     "lint:check": "eslint --fix --ext .ts ./src",
     "format:check": "prettier --check \"./src/**/*.ts\"",
-    "lint": "yarn lint:check && yarn format:check && prettier --write .",
+    "lint": "pnpm lint:check && pnpm format:check && prettier --write .",
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "test": "vitest",
-    "test:ci": "vitest --run",
-    "changeset": "changeset",
-    "version": "changeset version",
-    "prerelease": "yarn build",
-    "release": "changeset publish"
+    "test:ci": "vitest --run"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
@@ -72,9 +75,5 @@
     "typescript": "^5.2.2",
     "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^0.34.4"
-  },
-  "dependencies": {
-    "@changesets/changelog-github": "^0.5.1",
-    "@changesets/cli": "^2.28.1"
   }
 }

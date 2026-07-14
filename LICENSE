@@ -1,6 +1,10 @@
 MIT License
 
-Copyright (c) 2024 Plug
+Copyright (c) 2026 Blu (Pagnet S.A.)
+Copyright (c) 2024 Plug (upstream: @malga/tokenization)
+
+This project is a fork of malga-tokenization by plughacker, distributed under
+the MIT License. Original project: https://github.com/plughacker/malga-tokenization
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

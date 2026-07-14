@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blu Checkout Tokenization — Vanilla JS</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 480px; margin: 40px auto; padding: 0 16px; }
+      .field { border: 1px solid #d0d0d0; border-radius: 8px; height: 44px; margin-bottom: 12px; }
+      button { width: 100%; height: 44px; border: 0; border-radius: 8px; background: #0a5; color: #fff; font-size: 16px; cursor: pointer; }
+      #status { margin-top: 16px; font-size: 14px; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>Checkout Blu — Tokenizacao</h1>
+
+    <!-- Campos seguros (iframes) sao montados pelo SDK nestes containers. -->
+    <div id="card-number" class="field"></div>
+    <div id="card-holder-name" class="field"></div>
+    <div id="card-expiration-date" class="field"></div>
+    <div id="card-cvv" class="field"></div>
+
+    <button id="pay">Pagar</button>
+    <div id="status"></div>
+
+    <script type="module">
+      import { BluTokenization } from '@useblu/checkout-tokenization'
+
+      const statusEl = document.getElementById('status')
+      const log = (msg) => (statusEl.textContent = msg)
+
+      const tokenization = new BluTokenization({
+        apiKey: '<API_KEY_DO_MERCHANT>',
+        clientId: '<CLIENT_ID_DO_MERCHANT>',
+        options: {
+          config: {
+            fields: {
+              cardNumber: { container: 'card-number', placeholder: '9999 9999 9999 9999' },
+              cardHolderName: { container: 'card-holder-name', placeholder: 'Nome impresso' },
+              cardExpirationDate: { container: 'card-expiration-date', placeholder: 'MM/AA' },
+              cardCvv: { container: 'card-cvv', placeholder: '999' },
+            },
+          },
+          sandbox: true,
+        },
+      })
+
+      tokenization.on('validity', (data) => console.log('validity', data))
+      tokenization.on('cardTypeChanged', (data) => console.log('bandeira', data))
+
+      document.getElementById('pay').addEventListener('click', async () => {
+        log('Tokenizando...')
+
+        const { tokenId, error } = await tokenization.tokenize()
+
+        if (error) {
+          log(`Erro (${error.type}): ${error.message}` + (error.declinedCode ? `\ndeclinedCode: ${error.declinedCode}` : ''))
+          return
+        }
+
+        log(`tokenId: ${tokenId}\nEnviando cobranca para a API de cobranca...`)
+        await criarCobranca(tokenId)
+        log('Cobranca enviada.')
+      })
+
+      // Envie o tokenId + dados da cobranca para a sua API de cobranca.
+      async function criarCobranca(tokenId) {
+        await fetch('https://<endpoint-da-api-de-cobranca>/<rota-de-cobranca>', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            client_uuid: '<identificador-do-lojista>',
+            charge: {
+              amount: 15000, // inteiro em centavos
+              order_id: 'pedido-123',
+              statement_descriptor: 'LOJA XYZ',
+              description: 'Pedido 123',
+              payment_method: { payment_type: 'credit', installments: 3 },
+              payment_source: { source_type: 'token', token_id: tokenId },
+            },
+          }),
+        })
+      }
+    </script>
+  </body>
+</html>

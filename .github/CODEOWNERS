@@ -1,5 +1,3 @@
-# These owners will be the default owners for everything in
-# the repo. Unless a later match takes precedence,
-# @global-owner1 and @global-owner2 will be requested for
-# review when someone opens a pull request.
-*       @leonardorpr
+# Owner padrao do repositorio (fork Blu do SDK de tokenizacao).
+# Ajuste para o time dedicado (ex.: Squad Acquiring) se houver um slug proprio.
+*       @Pagnet/azure_plataformas

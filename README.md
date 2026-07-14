@@ -1,86 +1,81 @@
-<div align="center">
-  <picture>
-    <img alt="Malga" src="docs/assets/malga.png" width="85" />
-  </picture>
-  <h1>Malga Tokenization SDK</h1>
-</div>
+<h1 align="center">
+  Blu Checkout Tokenization
+</h1>
 
-![Tests](https://github.com/plughacker/malga-tokenization/actions/workflows/tests.yml/badge.svg)
+<p align="center">
+  <a href="https://github.com/Pagnet/blu-checkout-tokenization/actions">
+    <img alt="Actions Status" src="https://github.com/Pagnet/blu-checkout-tokenization/workflows/CI/badge.svg">
+  </a>
+  <a href="https://www.npmjs.com/package/@useblu/checkout-tokenization">
+    <img alt="npm version" src="https://img.shields.io/npm/v/@useblu/checkout-tokenization">
+  </a>
+  <a href="https://github.com/Pagnet/blu-checkout-tokenization/blob/main/LICENSE">
+    <img alt="GitHub License" src="https://img.shields.io/github/license/Pagnet/blu-checkout-tokenization">
+  </a>
+  <a href="https://github.com/Pagnet/blu-checkout-tokenization/graphs/commit-activity">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Pagnet/blu-checkout-tokenization">
+  </a>
+  <a href="https://github.com/prettier/prettier">
+    <img alt="Prettier code style" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg">
+  </a>
+  <a href="http://makeapullrequest.com">
+    <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
+  </a>
+</p>
 
-Simple way to tokenize cards with Malga
+SDK de **tokenizacao de cartoes** da Blu para checkout ecommerce. Os dados
+sensiveis do cartao transitam **exclusivamente** entre iframes seguros e a
+Malga — o SDK, o lojista e a API de cobranca **nunca** acessam dados de
+cartao, apenas o `tokenId` (conformidade PCI DSS).
+
+> Fork de [`@malga/tokenization`](https://github.com/plughacker/malga-tokenization)
+> (MIT). A logica de tokenizacao e herdada do upstream; este fork adiciona
+> branding, CI/CD, exemplos e documentacao Blu.
+
+## Installation
+
+```sh
+npm install @useblu/checkout-tokenization
+```
+
+or
+
+```sh
+pnpm add @useblu/checkout-tokenization
+```
 
 ## Getting Started
 
-First of all, you'll need to install our SDK into your project:
-
-```bash
-yarn add @malga/tokenization
-# or
-npm install @malga/tokenization
-# or
-pnpm add @malga/tokenization
-```
-
-1. Add the identification keys for each field involving card data in your form
+1. Adicione no seu formulario os containers para cada campo do cartao:
 
 ```html
-<form onSubmit="{handleGetTokenId}">
-  <section>
-    <div className="form-group">
-      <label htmlFor="card-number">Card Number</label>
-      <div id="card-number" className="form-control"></div>
-    </div>
-    <div className="form-group">
-      <label htmlFor="card-holder-name">Card Holder Name</label>
-      <div id="card-holder-name" className="form-control"></div>
-    </div>
-    <div className="form-group">
-      <label htmlFor="card-cvv">Card CVV</label>
-      <div id="card-cvv" className="form-control"></div>
-    </div>
-    <div className="form-group">
-      <label htmlFor="card-expiration-date">Card Expiration Date</label>
-      <div id="card-expiration-date" className="form-control"></div>
-    </div>
-  </section>
-  <button type="submit">Submit</button>
+<form onsubmit="handleGetTokenId(event)">
+  <div id="card-number"></div>
+  <div id="card-holder-name"></div>
+  <div id="card-cvv"></div>
+  <div id="card-expiration-date"></div>
+  <button type="submit">Pagar</button>
 </form>
 ```
 
-2. Now all you need to do is configure our SDK with your keys and call the tokenize method in your function handling the form submit
+2. Configure o SDK com as credenciais do merchant e chame `tokenize()`:
 
 ```ts
-import { MalgaTokenization } from '@malga/tokenization'
+import { BluTokenization } from '@useblu/checkout-tokenization'
 
-const malgaTokenization = new MalgaTokenization({
-  apiKey: '<YOUR_API_KEY>',
-  clientId: '<YOUR_CLIENT_ID>',
+const tokenization = new BluTokenization({
+  apiKey: '<API_KEY_DO_MERCHANT>',
+  clientId: '<CLIENT_ID_DO_MERCHANT>',
   options: {
     config: {
       fields: {
-        cardNumber: {
-          container: 'card-number',
-          placeholder: '9999 9999 9999 9999',
-        },
-        cardHolderName: {
-          container: 'card-holder-name',
-          placeholder: 'Its a test',
-        },
-        cardExpirationDate: {
-          container: 'card-expiration-date',
-          placeholder: 'MM/YY',
-        },
-        cardCvv: {
-          container: 'card-cvv',
-          placeholder: '999',
-        },
+        cardNumber: { container: 'card-number', placeholder: '9999 9999 9999 9999' },
+        cardHolderName: { container: 'card-holder-name', placeholder: 'Nome impresso' },
+        cardExpirationDate: { container: 'card-expiration-date', placeholder: 'MM/AA' },
+        cardCvv: { container: 'card-cvv', placeholder: '999' },
       },
       styles: {
-        // With this object, it's possible to change the styles of input components
-        input: {
-          color: '#000',
-          'font-size': '16px',
-        },
+        input: { color: '#000', 'font-size': '16px' },
       },
       preventAutofill: false,
     },
@@ -88,42 +83,139 @@ const malgaTokenization = new MalgaTokenization({
   },
 })
 
-// You can use others events like:
-malgaTokenization.on('cardTypeChanged', (event) => {
-  console.log('cardTypeChanged', event)
-})
+// Eventos disponiveis
+tokenization.on('cardTypeChanged', (event) => console.log('bandeira', event))
+tokenization.on('validity', (event) => console.log('validity', event))
+tokenization.on('focus', (event) => console.log('focus', event))
+tokenization.on('blur', (event) => console.log('blur', event))
 
-malgaTokenization.on('validity', (event) => {
-  console.log('validation', event)
-})
-
-malgaTokenization.on('blur', (event) => {
-  console.log('blur', event)
-})
-
-malgaTokenization.on('focus', (event) => {
-  console.log('blur', event)
-})
-
-async function handleSubmit(event) {
+async function handleGetTokenId(event) {
   event.preventDefault()
 
-  const { tokenId } = await malgaTokenization.tokenize()
-  console.log({ tokenId })
+  const { tokenId } = await tokenization.tokenize()
 
-  // Now you just need to send the tokenId along with
-  // the rest of the transaction data to your API
+  // Envie o tokenId + dados da cobranca para a API de cobranca — ver abaixo.
+  await criarCobranca(tokenId)
 }
 ```
 
-3. Submit the form and see the magic happen 💳
+> As credenciais (`apiKey` / `clientId`) sao **por merchant** e sao fornecidas
+> pela Blu.
 
-For more details on the implementation, you can access our documentation by [clicking here](https://docs.malga.io/docs/sdks/tokenization/intro).
+## Fluxo completo
+
+O fluxo tem dois passos:
+
+1. **Gerar o token** — o SDK tokeniza o cartao e retorna um `tokenId`
+   (`tokenize()`). Os dados sensiveis ficam entre os iframes seguros e a Malga.
+2. **Enviar o token para a API de cobranca** — envie o `tokenId`, junto com os
+   dados da cobranca, para a API de cobranca, que cria a cobranca.
+
+```ts
+async function criarCobranca(tokenId) {
+  await fetch('https://<endpoint-da-api-de-cobranca>/<rota-de-cobranca>', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      client_uuid: '<identificador-do-lojista>',
+      charge: {
+        amount: 15000, // inteiro em centavos
+        order_id: 'pedido-123',
+        statement_descriptor: 'LOJA XYZ',
+        description: 'Pedido 123',
+        payment_method: { payment_type: 'credit', installments: 3 },
+        payment_source: { source_type: 'token', token_id: tokenId },
+      },
+    }),
+  })
+}
+```
+
+## API Reference
+
+### `new BluTokenization(configurations)`
+
+| Campo | Tipo | Descricao |
+|---|---|---|
+| `apiKey` | `string` | Chave de API do merchant |
+| `clientId` | `string` | Identificador do merchant |
+| `options.config.fields` | `object` | Config dos campos seguros (`cardNumber`, `cardHolderName`, `cardExpirationDate`, `cardCvv`) |
+| `options.config.styles` | `object` | Estilos dos inputs |
+| `options.config.preventAutofill` | `boolean` | Desabilita autofill |
+| `options.sandbox` | `boolean` | Ambiente sandbox |
+
+### `tokenize(): Promise<{ tokenId, error? }>`
+
+Retorna `{ tokenId }` em caso de sucesso, ou `{ error }` em caso de falha
+(`error.type`, `error.declinedCode` quando `card_declined`).
+
+### `on(eventType, handler)`
+
+Eventos: `validity`, `cardTypeChanged`, `focus`, `blur`.
+
+## Ambientes
+
+O ambiente e escolhido por `options` — nao ha URL a configurar:
+
+| `options` | Ambiente Malga |
+|---|---|
+| `{ debug: true }` | dev (`hosted-fields.dev.malga.io`) |
+| `{ sandbox: true }` | sandbox (`hosted-fields-sandbox.malga.io`) |
+| `{}` ou `{ sandbox: false }` | **producao** (`hosted-fields.malga.io`) |
+
+Para producao, use as credenciais de **producao** do merchant (fornecidas pela
+Blu).
+
+## Tratamento de erros
+
+```ts
+const { tokenId, error } = await tokenization.tokenize()
+
+if (error) {
+  // error.type: 'api_error' | 'bad_request' | 'invalid_request_error' | 'card_declined'
+  // error.declinedCode: 'insufficient_funds' | 'invalid_cvv' | 'expired_card' | ...
+  console.error(error.type, error.message, error.declinedCode)
+}
+```
 
 ## Examples
 
-If you have any doubts about the integration, you can [click here](https://github.com/plughacker/malga-tokenization/tree/main/examples) to see some examples
+- [`examples/blu/vanilla-js/`](./examples/blu/vanilla-js/) — HTML + JS puro (tokenizar e enviar a cobranca)
+- [`examples/blu/react/`](./examples/blu/react/) — componente React (tokenizar e enviar a cobranca)
+- [`examples/v1`](./examples/v1) e [`examples/v2`](./examples/v2) — exemplos herdados do upstream
+
+## Seguranca (PCI DSS)
+
+Os dados de cartao transitam **apenas** entre os iframes seguros e a Malga.
+Nem o frontend do lojista, nem o SDK, nem a API de cobranca tem acesso aos
+dados sensiveis — somente ao `tokenId` resultante.
 
 ## Contributing
 
-Feel free to contribute to this project by submitting pull requests, creating documentation, or bringing ideas to make the project even better!
+Whether you're helping us fix bugs, improve the docs, or spread the word, we'd
+love to have you as part of this project! Read below to learn how you can take
+part of it.
+
+### Code of Conduct
+
+We adopted a Code of Conduct that we expect project participants to adhere to.
+Please read [the full text](.github/CODE_OF_CONDUCT.md) so that you can
+understand what actions will and will not be tolerated.
+
+### Contributing Guide
+
+Read our [contributing guide](.github/CONTRIBUTING.md) to learn about our
+development process, how to propose bugfixes and improvements, how we sync with
+the upstream project, and how to build and test your changes.
+
+### Security
+
+Found a security issue? Please **do not** open a public issue — follow our
+[security policy](.github/SECURITY.md) and report it privately to
+seguranca@useblu.com.br.
+
+## License
+
+Licensed under the terms of the [MIT License](LICENSE). This project is a fork
+of [plughacker/malga-tokenization](https://github.com/plughacker/malga-tokenization),
+with attribution preserved.
