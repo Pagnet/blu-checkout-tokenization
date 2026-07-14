@@ -8,7 +8,7 @@
 ### Delta sobre o upstream (@malga/tokenization v2.3.0)
 
 - Identidade do pacote → `@useblu/checkout-tokenization`, branding e repositorio Blu.
-- Exporta `BluTokenization` (branding) mantendo `MalgaTokenization` como alias interno.
+- Exporta **apenas** `BluTokenization` (branding); `MalgaTokenization` nao e exposto na API publica.
 - Workflows `ci.yml` e `publish.yml` (pnpm), com `publish --provenance`.
 - Exemplos `examples/blu/{vanilla-js,react}` com o fluxo Blu (tokenizar → Integracao/n8n).
 - README voltado ao lojista Blu; LICENSE MIT com atribuicao ao upstream.
