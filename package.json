@@ -1,19 +1,26 @@
 {
-  "name": "@malga/tokenization",
-  "version": "2.3.0",
+  "name": "@useblu/checkout-tokenization",
+  "version": "1.0.0",
   "packageManager": "pnpm@9.0.5",
-  "description": "Simple way to tokenize cards with Malga",
-  "repository": "git@github.com:plughacker/malga-tokenization.git",
-  "author": "Malga <engineer@malga.io>",
+  "description": "SDK de tokenizacao de cartoes da Blu para checkout ecommerce (fork de @malga/tokenization). Dados sensiveis transitam apenas entre iframes seguros e a Malga; o lojista recebe apenas o tokenId.",
+  "repository": "git@github.com:Pagnet/blu-checkout-tokenization.git",
+  "author": "Blu <dev@useblu.com.br>",
   "contributors": [
-    "Leonardo Pinheiro <leonardo@malga.io>"
+    "Malga <engineer@malga.io> (upstream: @malga/tokenization)"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/plughacker/malga-tokenization/issues"
+    "url": "https://github.com/Pagnet/blu-checkout-tokenization/issues"
   },
-  "homepage": "https://github.com/plughacker/malga-tokenization#readme",
+  "homepage": "https://github.com/Pagnet/blu-checkout-tokenization#readme",
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "files": [
     "dist"
   ],
