@@ -1,6 +1,27 @@
-<div align="center">
-  <h1>Blu Checkout Tokenization SDK</h1>
-</div>
+<h1 align="center">
+  Blu Checkout Tokenization
+</h1>
+
+<p align="center">
+  <a href="https://github.com/Pagnet/blu-checkout-tokenization/actions">
+    <img alt="Actions Status" src="https://github.com/Pagnet/blu-checkout-tokenization/workflows/CI/badge.svg">
+  </a>
+  <a href="https://www.npmjs.com/package/@useblu/checkout-tokenization">
+    <img alt="npm version" src="https://img.shields.io/npm/v/@useblu/checkout-tokenization">
+  </a>
+  <a href="https://github.com/Pagnet/blu-checkout-tokenization/blob/main/LICENSE">
+    <img alt="GitHub License" src="https://img.shields.io/github/license/Pagnet/blu-checkout-tokenization">
+  </a>
+  <a href="https://github.com/Pagnet/blu-checkout-tokenization/graphs/commit-activity">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Pagnet/blu-checkout-tokenization">
+  </a>
+  <a href="https://github.com/prettier/prettier">
+    <img alt="Prettier code style" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg">
+  </a>
+  <a href="http://makeapullrequest.com">
+    <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
+  </a>
+</p>
 
 SDK de **tokenizacao de cartoes** da Blu para checkout ecommerce. Os dados
 sensiveis do cartao transitam **exclusivamente** entre iframes seguros e a
@@ -11,14 +32,16 @@ cartao, apenas o `tokenId` (conformidade PCI DSS).
 > (MIT). A logica de tokenizacao e herdada do upstream; este fork adiciona
 > branding, CI/CD, exemplos e documentacao Blu.
 
-## Instalacao
+## Installation
 
-```bash
+```sh
 npm install @useblu/checkout-tokenization
-# ou
+```
+
+or
+
+```sh
 pnpm add @useblu/checkout-tokenization
-# ou
-yarn add @useblu/checkout-tokenization
 ```
 
 ## Getting Started
@@ -129,6 +152,19 @@ Retorna `{ tokenId }` em caso de sucesso, ou `{ error }` em caso de falha
 
 Eventos: `validity`, `cardTypeChanged`, `focus`, `blur`.
 
+## Ambientes
+
+O ambiente e escolhido por `options` — nao ha URL a configurar:
+
+| `options` | Ambiente Malga |
+|---|---|
+| `{ debug: true }` | dev (`hosted-fields.dev.malga.io`) |
+| `{ sandbox: true }` | sandbox (`hosted-fields-sandbox.malga.io`) |
+| `{}` ou `{ sandbox: false }` | **producao** (`hosted-fields.malga.io`) |
+
+Para producao, use as credenciais de **producao** do merchant (sob a conta
+guarda-chuva da Blu na Malga).
+
 ## Tratamento de erros
 
 ```ts
@@ -141,7 +177,7 @@ if (error) {
 }
 ```
 
-## Exemplos
+## Examples
 
 - [`examples/blu/vanilla-js/`](./examples/blu/vanilla-js/) — HTML + JS puro (fluxo Blu via Integracao)
 - [`examples/blu/react/`](./examples/blu/react/) — componente React (fluxo Blu via Integracao)
@@ -153,8 +189,32 @@ Os dados de cartao transitam **apenas** entre os iframes seguros e a Malga.
 Nem o frontend do lojista, nem o SDK, nem a camada de Integracao tem acesso aos
 dados sensiveis — somente ao `tokenId` resultante.
 
-## Licenca
+## Contributing
 
-[MIT](./LICENSE). Fork de
-[plughacker/malga-tokenization](https://github.com/plughacker/malga-tokenization),
-com atribuicao mantida.
+Whether you're helping us fix bugs, improve the docs, or spread the word, we'd
+love to have you as part of this project! Read below to learn how you can take
+part of it.
+
+### Code of Conduct
+
+We adopted a Code of Conduct that we expect project participants to adhere to.
+Please read [the full text](.github/CODE_OF_CONDUCT.md) so that you can
+understand what actions will and will not be tolerated.
+
+### Contributing Guide
+
+Read our [contributing guide](.github/CONTRIBUTING.md) to learn about our
+development process, how to propose bugfixes and improvements, how we sync with
+the upstream project, and how to build and test your changes.
+
+### Security
+
+Found a security issue? Please **do not** open a public issue — follow our
+[security policy](.github/SECURITY.md) and report it privately to
+seguranca@useblu.com.br.
+
+## License
+
+Licensed under the terms of the [MIT License](LICENSE). This project is a fork
+of [plughacker/malga-tokenization](https://github.com/plughacker/malga-tokenization),
+with attribution preserved.

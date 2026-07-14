@@ -40,21 +40,17 @@
   },
   "lint-staged": {
     "packages/**/*.{ts,tsx}": [
-      "yarn lint"
+      "pnpm lint"
     ]
   },
   "scripts": {
     "setup:husky": "husky install",
     "lint:check": "eslint --fix --ext .ts ./src",
     "format:check": "prettier --check \"./src/**/*.ts\"",
-    "lint": "yarn lint:check && yarn format:check && prettier --write .",
+    "lint": "pnpm lint:check && pnpm format:check && prettier --write .",
     "build": "tsup src/index.ts --format esm,cjs --dts",
     "test": "vitest",
-    "test:ci": "vitest --run",
-    "changeset": "changeset",
-    "version": "changeset version",
-    "prerelease": "yarn build",
-    "release": "changeset publish"
+    "test:ci": "vitest --run"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
@@ -79,9 +75,5 @@
     "typescript": "^5.2.2",
     "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^0.34.4"
-  },
-  "dependencies": {
-    "@changesets/changelog-github": "^0.5.1",
-    "@changesets/cli": "^2.28.1"
   }
 }
